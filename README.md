@@ -1,3 +1,8 @@
+
+This fork uses github.com/ZachGoldberg/bluetti_mqtt.git which is a fork of https://github.com/bxm6306/bluetti_mqtt which is a fork of https://github.com/warhammerkid/bluetti_mqtt.
+
+The goal of these forks is to incorporate bxm6306's work supporting the AC60/AC70 for home assistant, and to include a bugfix pinning the version of paho-mqtt to 1.6.1
+
 # Bluetti2MQTT
 
 ![update-badge](https://img.shields.io/github/last-commit/SSMCD/bluetti2mqtt?label=Last%20Updated)
