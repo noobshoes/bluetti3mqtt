@@ -5,7 +5,7 @@ FROM $BUILD_FROM
 COPY rootfs /
 
 # Install bluetti_mqtt
-RUN pip install bluetti-mqtt==0.15.0 \
+RUN pip install git+https://github.com/bxm6306/bluetti_mqtt.git@patch-2 \
 	&& apk add --update --no-cache \
 		bluez=5.65-r0 \
 	&& rm -rf /var/cache/apk/* /lib/apk/db/* \
