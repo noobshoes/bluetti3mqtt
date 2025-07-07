@@ -1,15 +1,39 @@
 ARG BUILD_FROM
-FROM "ghcr.io/hassio-addons/base-python:5.0.2"
+FROM $BUILD_FROM
 
-# Copy data for add-on
+# Set shell to bash
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Copy root filesystem
 COPY rootfs /
 
-# Install bluetti_mqtt
-RUN \
-    pip install \
+# Install build dependencies
+RUN apk add --no-cache \
+        build-base \
+        python3-dev \
+        libffi-dev \
+        openssl-dev \
+        cargo \
+        bluez-dev \
+        git
+
+# Upgrade pip and install cryptography separately to help with dependency resolution
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir --break-system-packages cryptography cffi
+
+# Install the bluetti_mqtt package
+RUN pip install \
         --no-cache-dir \
         --break-system-packages \
-        "bluettimqtt[bluetooth]==0.2.3" \
-    && chmod a+x /run.sh
+        "git+https://github.com/nano2dev/bluetti_mqtt.git#egg=bluettimqtt[bluetooth]"
+
+# Clean up build dependencies to reduce image size
+RUN apk del \
+        build-base \
+        git \
+        cargo
+
+# Set permissions for the run script
+RUN chmod a+x /run.sh
 
 CMD [ "/run.sh" ]
