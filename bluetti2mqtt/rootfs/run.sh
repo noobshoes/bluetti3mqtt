@@ -51,15 +51,15 @@ case $MODE in
 
 	mqtt)
 		bashio::log.info 'Starting bluetti-mqtt...'
-		args+=( \
-			--broker ${MQTT_HOST} \
-			--port ${MQTT_PORT} \
-			--username ${MQTT_USERNAME} \
-			--password ${MQTT_PASSWORD} \
-			--interval ${POLL_SEC} \
-			--ha-config ${HA_CONFIG} \
-			${BT_MAC})
-		bluetti-mqtt ${args[@]}
+		args+=(--broker "${MQTT_HOST}" --port "${MQTT_PORT}")
+		if [[ -n "${MQTT_USERNAME}" ]]; then
+			args+=(--username "${MQTT_USERNAME}")
+		fi
+		if [[ -n "${MQTT_PASSWORD}" ]]; then
+			args+=(--password "${MQTT_PASSWORD}")
+		fi
+		args+=(--interval "${POLL_SEC}" --ha-config "${HA_CONFIG}" "${BT_MAC}")
+		bluetti-mqtt "${args[@]}"
 		;;
 
 	discovery)
