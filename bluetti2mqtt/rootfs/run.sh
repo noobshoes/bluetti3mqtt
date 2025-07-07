@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bashio
 # ==============================================================================
-# Home Assistant Add-on: Bluetti2MQTT
+# Home Assistant Add-on: Bluetti3MQTT
 # MQTT bridge between Bluetti and Home Assistant
 # ==============================================================================
 
