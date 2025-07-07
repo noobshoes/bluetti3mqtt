@@ -13,15 +13,14 @@ RUN apk add --no-cache \
     python3-dev \
     libffi-dev \
     openssl-dev \
+    python3-openssl \
     cargo \
     bluez-dev \
-    git \
-    py3-cryptography
+    git
 
-# Install bluetti_mqtt, but tell pip not to fetch cryptography from its index
+# Install bluetti_mqtt
 RUN pip install \
     --no-cache-dir \
     --break-system-packages \
-    --no-deps \
     "git+https://github.com/nano2dev/bluetti_mqtt.git#egg=bluettimqtt[bluetooth]" \
     && pip install --no-cache-dir --break-system-packages paho-mqtt pyserial-asyncio bleak
