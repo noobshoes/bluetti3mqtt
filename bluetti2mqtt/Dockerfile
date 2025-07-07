@@ -10,9 +10,11 @@ RUN apk add --update --no-cache \
         python3-dev \
         libffi-dev \
         openssl-dev \
+        cargo \
         bluez \
         git \
     && pip install --no-cache-dir \
+        cffi \
         cryptography \
         pyasn1 \
         git+https://github.com/nano2dev/bluetti_mqtt.git \
