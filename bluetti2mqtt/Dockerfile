@@ -6,11 +6,14 @@ COPY rootfs /
 
 # Install dependencies
 RUN apk add --update --no-cache \
+        build-base \
+        python3-dev \
+        libffi-dev \
+        openssl-dev \
         bluez \
-        py3-cryptography \
         git \
-    && pip install --upgrade pip \
-    && pip install --no-cache-dir --break-system-packages \
+    && pip install --no-cache-dir \
+        cryptography \
         pyasn1 \
         git+https://github.com/nano2dev/bluetti_mqtt.git \
     && rm -rf /var/cache/apk/* /lib/apk/db/* \
