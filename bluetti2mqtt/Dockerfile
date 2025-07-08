@@ -7,7 +7,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Copy root filesystem
 COPY rootfs /
 
-# Install build dependencies, python, fix line endings, and install the package
+# Install build dependencies and python
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -18,13 +18,19 @@ RUN apk add --no-cache \
     cargo \
     bluez-dev \
     git \
-    dos2unix \
-    && dos2unix /run.sh \
-    && pip3 install \
-        --no-cache-dir \
-        --break-system-packages \
-        "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git" \
-    && apk del build-base git cargo
+    dos2unix
+
+# Fix line endings
+RUN dos2unix /run.sh
+
+# Install the package
+RUN pip3 install \
+    --no-cache-dir \
+    --break-system-packages \
+    "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git"
+
+# Clean up build dependencies
+RUN apk del build-base git cargo
 
 # Set permissions for the run script
 RUN chmod a+x /run.sh
