@@ -8,6 +8,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY rootfs /
 
 # Install build dependencies and python
+RUN apk update
 RUN apk add --no-cache \
     python3 \
     py3-pip \
