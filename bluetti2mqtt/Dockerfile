@@ -14,10 +14,13 @@ RUN apk update && apk add --no-cache \
     openssl-dev \
     cargo \
     bluez-dev \
-    git
+    git \
+    libxml2-dev \
+    libxslt-dev
 
 # Install bluetti_mqtt and its dependencies
-RUN pip install \
+RUN pip install --no-cache-dir --break-system-packages wheel && \
+    pip install \
     --no-cache-dir \
     --break-system-packages \
     "git+https://github.com/nano2dev/bluetti_mqtt.git#egg=bluettimqtt[bluetooth]" \
