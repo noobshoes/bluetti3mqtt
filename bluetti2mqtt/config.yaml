@@ -2,7 +2,7 @@
 name: Bluetti 3 MQTT
 version: 1.5.1
 slug: bluetti3mqtt
-description: MQTT bridge between Bluetti and Home Assistant with updated nano2dev support
+description: "MQTT bridge between Bluetti and Home Assistant with updated nano2dev support"
 url: https://github.com/noobshoes/bluetti3mqtt
 arch:
   - aarch64
@@ -24,7 +24,7 @@ options:
   mqtt_port: ""
   mode: mqtt
   ha_config: normal
-  bt_mac: 00:11:22:33:44:55
+  bt_mac: "00:11:22:33:44:55"
   poll_sec: 30
   scan: false
   debug: false
@@ -35,7 +35,7 @@ schema:
   mqtt_port: str?
   mode: list(mqtt|discovery|logger)
   ha_config: list(normal|none|advanced)
-  bt_mac: match(^([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}( ([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2})*$)
+  bt_mac: "match(^([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}( ([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2})*$)"
   poll_sec: int
   scan: bool
   debug: bool
