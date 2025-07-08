@@ -4,8 +4,9 @@ FROM $BUILD_FROM
 # Copy root filesystem
 COPY rootfs /
 
-# Install system dependencies
-RUN apk update && apk upgrade && apk add --no-cache \
+# Install system dependencies with conflict resolution
+RUN apk update && \
+    apk add --no-cache --force-overwrite \
     bluez \
     bluez-dev \
     dos2unix \
