@@ -11,7 +11,6 @@ arch:
   - armhf
   - armv7
   - i386
-startup: services
 host_dbus: true
 usb: true
 map:
@@ -24,9 +23,9 @@ options:
   mqtt_password: ""
   mqtt_host: ""
   mqtt_port: ""
-  mode: "mqtt"
-  ha_config: "normal"
-  bt_mac: "00:11:22:33:44:55"
+  mode: mqtt
+  ha_config: normal
+  bt_mac: 00:11:22:33:44:55
   poll_sec: 30
   scan: false
   debug: false
