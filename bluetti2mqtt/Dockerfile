@@ -1,7 +1,7 @@
 FROM python:3.11-alpine
 
-# Set shell to bash
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# Set shell
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 
 # Copy root filesystem
 COPY rootfs /
