@@ -1,6 +1,6 @@
 ---
 name: Bluetti to MQTT
-version: "1.5.3"
+version: 1.5.4
 image: "local/{arch}-addon-bluetti2mqtt"
 slug: "bluetti2mqtt"
 description: "MQTT bridge between Bluetti and Home Assistant with updated nano2dev support"
