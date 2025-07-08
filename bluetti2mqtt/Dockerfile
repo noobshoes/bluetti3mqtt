@@ -7,11 +7,10 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Copy root filesystem
 COPY rootfs /
 
-# Update the package index
-RUN apk update
+# Update the package index and install build-base
+RUN apk update && apk add --no-cache build-base
 
-# Install build dependencies one by one for better error isolation
-RUN apk add --no-cache build-base
+# Install remaining build dependencies one by one
 RUN apk add --no-cache python3-dev
 RUN apk add --no-cache libffi-dev
 RUN apk add --no-cache openssl-dev
