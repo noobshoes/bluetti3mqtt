@@ -1,7 +1,7 @@
 ---
 name: "Bluetti 3 MQTT"
 version: "1.5.3"
-slug: "bluetti3mqtt"
+slug: "bluetti2mqtt"
 description: "MQTT bridge between Bluetti and Home Assistant with updated nano2dev support"
 url: "https://github.com/noobshoes/bluetti3mqtt"
 arch:
