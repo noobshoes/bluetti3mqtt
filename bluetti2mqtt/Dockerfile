@@ -5,15 +5,14 @@ FROM $BUILD_FROM
 COPY rootfs /
 
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apk update && apk upgrade && apk add --no-cache \
     bluez \
     bluez-dev \
     dos2unix \
     git \
     build-base \
     python3-dev \
-    libffi-dev \
-    openssl-dev
+    libffi-dev
 
 # Fix line endings
 RUN dos2unix /run.sh
