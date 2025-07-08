@@ -1,15 +1,10 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+FROM python:3.11-alpine
 
 # Set shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Copy root filesystem
 COPY rootfs /
-
-# Force a specific, stable Alpine repository to avoid build environment issues
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositories && \
-    echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories
 
 # Install build dependencies
 RUN apk update && apk add --no-cache \
