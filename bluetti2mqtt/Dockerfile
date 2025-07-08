@@ -7,7 +7,8 @@ COPY rootfs /
 RUN apk add --no-cache \
     bluez \
     bluez-dev \
-    dos2unix
+    dos2unix \
+    git
 
 # Fix line endings
 RUN dos2unix /run.sh
