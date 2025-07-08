@@ -4,17 +4,11 @@ FROM $BUILD_FROM
 # Copy root filesystem
 COPY rootfs /
 
-# Update Alpine packages and resolve musl version conflicts
-RUN apk update && \
-    apk upgrade musl && \
-    apk add --no-cache \
-        bluez \
-        bluez-dev \
-        dos2unix \
-        git \
-        build-base \
-        python3-dev \
-        libffi-dev
+# Install only essential packages to avoid musl conflicts
+RUN apk add --no-cache \
+    bluez \
+    dos2unix \
+    git
 
 # Fix line endings
 RUN dos2unix /run.sh
