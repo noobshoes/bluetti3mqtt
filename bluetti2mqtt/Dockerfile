@@ -7,6 +7,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Copy root filesystem
 COPY rootfs /
 
+# Update the package index
+RUN apk update
+
 # Install build dependencies one by one for better error isolation
 RUN apk add --no-cache build-base
 RUN apk add --no-cache python3-dev
