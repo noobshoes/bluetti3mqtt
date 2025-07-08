@@ -7,16 +7,15 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Copy root filesystem
 COPY rootfs /
 
-# Install build dependencies
-RUN apk add --no-cache \
-    build-base \
-    python3-dev \
-    libffi-dev \
-    openssl-dev \
-    python3-openssl \
-    cargo \
-    bluez-dev \
-    git
+# Install build dependencies one by one for better error isolation
+RUN apk add --no-cache build-base
+RUN apk add --no-cache python3-dev
+RUN apk add --no-cache libffi-dev
+RUN apk add --no-cache openssl-dev
+RUN apk add --no-cache python3-openssl
+RUN apk add --no-cache cargo
+RUN apk add --no-cache bluez-dev
+RUN apk add --no-cache git
 
 # Install bluetti_mqtt
 RUN pip install \
