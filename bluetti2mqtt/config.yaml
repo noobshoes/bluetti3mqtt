@@ -1,16 +1,15 @@
 ---
 name: Bluetti 3 MQTT
-version: 1.4.2.1
+version: 1.5.1
 slug: bluetti3mqtt
-description: MQTT bridge between Bluetti and Home Assistant with ac70 support
-url: https://github.com/ZachGoldberg/bluetti2mqtt
+description: MQTT bridge between Bluetti and Home Assistant with updated nano2dev support
+url: https://github.com/noobshoes/bluetti3mqtt
 arch:
   - aarch64
   - amd64
   - armhf
   - armv7
   - i386
-image: ghcr.io/zachgoldberg/{arch}-addon-bluetti2mqtt
 host_dbus: true
 usb: true
 map:
