@@ -36,7 +36,7 @@ schema:
   mqtt_port: str?
   mode: list(mqtt|discovery|logger)
   ha_config: list(normal|none|advanced)
-  bt_mac: str
+  bt_mac: match(^([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}( ([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2})*$)
   poll_sec: int
   scan: bool
   debug: bool
