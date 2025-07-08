@@ -19,12 +19,10 @@ RUN apk update && apk add --no-cache \
     libxslt-dev
 
 # Install bluetti_mqtt and its dependencies
-RUN pip install --no-cache-dir --break-system-packages wheel && \
-    pip install \
+RUN pip install \
     --no-cache-dir \
     --break-system-packages \
-    "git+https://github.com/nano2dev/bluetti_mqtt.git#egg=bluettimqtt[bluetooth]" \
-    && pip install --no-cache-dir --break-system-packages paho-mqtt pyserial-asyncio bleak
+    "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git"
 
 # Clean up build dependencies to reduce image size
 RUN apk del build-base git cargo
