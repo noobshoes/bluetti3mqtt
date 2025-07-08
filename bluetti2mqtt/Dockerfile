@@ -24,8 +24,14 @@ RUN pip install --no-cache-dir \
 RUN pip install --no-cache-dir \
     "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git"
 
-# Fix the bluetti-mqtt entry point script (it's missing sys.argv parameter)
-RUN sed -i 's/sys.exit(main())/sys.exit(main(sys.argv))/' /usr/local/bin/bluetti-mqtt
+# Fix the bluetti-mqtt entry point script only (it needs sys.argv parameter)
+# Check if the pattern exists before applying the sed command
+RUN if grep -q "sys.exit(main())" /usr/local/bin/bluetti-mqtt; then \
+        sed -i 's/sys.exit(main())/sys.exit(main(sys.argv))/' /usr/local/bin/bluetti-mqtt; \
+    fi
+
+# Verify bluetti-discovery and bluetti-logger are NOT modified (they expect main() with no args)
+# These should remain as sys.exit(main()) without parameters
 
 # Set permissions
 RUN chmod a+x /run.sh
