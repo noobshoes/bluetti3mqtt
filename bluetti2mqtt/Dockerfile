@@ -7,17 +7,18 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Copy root filesystem
 COPY rootfs /
 
-# Update the package index and install build-base
-RUN apk update && apk add --no-cache build-base
+# Change APK repository to a different mirror to avoid CDN issues
+RUN sed -i 's/dl-cdn.alpinelinux.org/dl-4.alpinelinux.org/g' /etc/apk/repositories
 
-# Install remaining build dependencies one by one
-RUN apk add --no-cache python3-dev
-RUN apk add --no-cache libffi-dev
-RUN apk add --no-cache openssl-dev
-RUN apk add --no-cache python3-openssl
-RUN apk add --no-cache cargo
-RUN apk add --no-cache bluez-dev
-RUN apk add --no-cache git
+# Install build dependencies
+RUN apk update && apk add --no-cache \
+    build-base \
+    python3-dev \
+    libffi-dev \
+    openssl-dev \
+    cargo \
+    bluez-dev \
+    git
 
 # Install bluetti_mqtt
 RUN pip install \
@@ -25,3 +26,11 @@ RUN pip install \
     --break-system-packages \
     "git+https://github.com/nano2dev/bluetti_mqtt.git#egg=bluettimqtt[bluetooth]" \
     && pip install --no-cache-dir --break-system-packages paho-mqtt pyserial-asyncio bleak
+
+# Clean up build dependencies to reduce image size
+RUN apk del build-base git cargo
+
+# Set permissions for the run script
+RUN chmod a+x /run.sh
+
+CMD [ "/run.sh" ]
