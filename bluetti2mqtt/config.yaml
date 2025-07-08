@@ -1,5 +1,5 @@
 ---
-name: "Bluetti 3 MQTT"
+name: "Bluetti 2 MQTT"
 version: "1.5.3"
 slug: "bluetti2mqtt"
 description: "MQTT bridge between Bluetti and Home Assistant with updated nano2dev support"
@@ -30,13 +30,13 @@ options:
   scan: false
   debug: false
 schema:
-  mqtt_username: "str?"
-  mqtt_password: "password?"
-  mqtt_host: "str?"
-  mqtt_port: "str?"
-  mode: "list(mqtt|discovery|logger)"
-  ha_config: "list(normal|none|advanced)"
-  bt_mac: "str"
-  poll_sec: "int"
-  scan: "bool"
-  debug: "bool"
+  mqtt_username: str?
+  mqtt_password: password?
+  mqtt_host: str?
+  mqtt_port: str?
+  mode: list(mqtt|discovery|logger)
+  ha_config: list(normal|none|advanced)
+  bt_mac: str
+  poll_sec: int
+  scan: bool
+  debug: bool
