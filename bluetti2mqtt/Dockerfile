@@ -18,7 +18,6 @@ RUN dos2unix /run.sh
 # Set environment variables for better compatibility
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONPATH=/usr/local/lib/python3.11/site-packages
 
 # Install Python dependencies (handle both old and new pip versions)
 RUN pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel || \
