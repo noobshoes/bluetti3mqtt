@@ -20,11 +20,11 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH=/usr/local/lib/python3.11/site-packages
 
-# Install Python dependencies with explicit versions
-RUN pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+# Install Python dependencies with explicit versions (older pip version compatibility)
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Install required dependencies first
-RUN pip install --no-cache-dir --break-system-packages \
+RUN pip install --no-cache-dir \
     pyasn1==0.6.1 \
     cryptography==44.0.0 \
     dbus-next==0.2.3 \
@@ -34,10 +34,10 @@ RUN pip install --no-cache-dir --break-system-packages \
     asyncio-mqtt==0.12.1
 
 # Install bluetti_mqtt from nano2dev repository with error handling
-RUN pip install --no-cache-dir --break-system-packages \
+RUN pip install --no-cache-dir \
     "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git" || \
     (echo "Retrying bluetti-mqtt installation..." && \
-     pip install --no-cache-dir --break-system-packages --force-reinstall \
+     pip install --no-cache-dir --force-reinstall \
      "git+https://github.com/nano2dev/bluetti_mqtt.git")
 
 # Fix all bluetti entry point scripts (they all need different argument handling)
