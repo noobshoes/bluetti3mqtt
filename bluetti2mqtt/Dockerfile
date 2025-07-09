@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.21.0
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
 FROM $BUILD_FROM
 
 # Copy root filesystem
@@ -9,7 +9,8 @@ RUN apk add --no-cache \
     bluez \
     dos2unix \
     git \
-    python3-dev
+    python3-dev \
+    py3-pip
 
 # Fix line endings
 RUN dos2unix /run.sh
@@ -20,10 +21,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH=/usr/local/lib/python3.11/site-packages
 
 # Install Python dependencies with explicit versions
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
 
 # Install required dependencies first
-RUN pip install --no-cache-dir \
+RUN pip install --no-cache-dir --break-system-packages \
     pyasn1==0.6.1 \
     cryptography==44.0.0 \
     dbus-next==0.2.3 \
@@ -33,15 +34,15 @@ RUN pip install --no-cache-dir \
     asyncio-mqtt==0.12.1
 
 # Install bluetti_mqtt from nano2dev repository with error handling
-RUN pip install --no-cache-dir \
+RUN pip install --no-cache-dir --break-system-packages \
     "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git" || \
     (echo "Retrying bluetti-mqtt installation..." && \
-     pip install --no-cache-dir --force-reinstall \
+     pip install --no-cache-dir --break-system-packages --force-reinstall \
      "git+https://github.com/nano2dev/bluetti_mqtt.git")
 
 # Fix all bluetti entry point scripts (they all need different argument handling)
 RUN echo "Creating bluetti-mqtt script..." && \
-    echo '#!/usr/local/bin/python3.11' > /usr/local/bin/bluetti-mqtt && \
+    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-mqtt && \
     echo '# -*- coding: utf-8 -*-' >> /usr/local/bin/bluetti-mqtt && \
     echo 'import re' >> /usr/local/bin/bluetti-mqtt && \
     echo 'import sys' >> /usr/local/bin/bluetti-mqtt && \
@@ -51,7 +52,7 @@ RUN echo "Creating bluetti-mqtt script..." && \
     echo '    sys.exit(main(sys.argv))' >> /usr/local/bin/bluetti-mqtt && \
     chmod +x /usr/local/bin/bluetti-mqtt && \
     echo "Creating bluetti-discovery script..." && \
-    echo '#!/usr/local/bin/python3.11' > /usr/local/bin/bluetti-discovery && \
+    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-discovery && \
     echo '# -*- coding: utf-8 -*-' >> /usr/local/bin/bluetti-discovery && \
     echo 'import re' >> /usr/local/bin/bluetti-discovery && \
     echo 'import sys' >> /usr/local/bin/bluetti-discovery && \
@@ -61,7 +62,7 @@ RUN echo "Creating bluetti-mqtt script..." && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-discovery && \
     chmod +x /usr/local/bin/bluetti-discovery && \
     echo "Creating bluetti-logger script..." && \
-    echo '#!/usr/local/bin/python3.11' > /usr/local/bin/bluetti-logger && \
+    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-logger && \
     echo '# -*- coding: utf-8 -*-' >> /usr/local/bin/bluetti-logger && \
     echo 'import re' >> /usr/local/bin/bluetti-logger && \
     echo 'import sys' >> /usr/local/bin/bluetti-logger && \
@@ -73,6 +74,7 @@ RUN echo "Creating bluetti-mqtt script..." && \
 
 # Verify installations and create diagnostic script
 RUN python3 -c "import bluetti_mqtt; print('bluetti_mqtt imported successfully')" && \
+    which python3 && \
     ls -la /usr/local/bin/bluetti-* && \
     echo "Entry points verified"
 
