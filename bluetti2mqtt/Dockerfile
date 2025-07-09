@@ -1,4 +1,5 @@
-FROM python:3.11-alpine
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.21.0
+FROM $BUILD_FROM
 
 # Copy root filesystem
 COPY rootfs /
@@ -8,11 +9,6 @@ RUN apk add --no-cache \
     bluez \
     dos2unix \
     git \
-    gcc \
-    musl-dev \
-    linux-headers \
-    libffi-dev \
-    openssl-dev \
     python3-dev
 
 # Fix line endings
