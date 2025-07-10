@@ -43,15 +43,9 @@ RUN pip install --no-cache-dir --break-system-packages \
 
 # Install bluetti_mqtt from nano2dev repository with error handling
 RUN pip install --no-cache-dir --break-system-packages \
-    "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git" || \
+    "git+https://github.com/nano2dev/bluetti_mqtt.git" || \
     pip install --no-cache-dir \
-    "bluetti-mqtt[bluetooth]@git+https://github.com/nano2dev/bluetti_mqtt.git" || \
-    (echo "Retrying bluetti-mqtt installation..." && \
-     pip install --no-cache-dir --break-system-packages --force-reinstall \
-     "git+https://github.com/nano2dev/bluetti_mqtt.git") || \
-    (echo "Final fallback bluetti-mqtt installation..." && \
-     pip install --no-cache-dir --force-reinstall \
-     "git+https://github.com/nano2dev/bluetti_mqtt.git")
+    "git+https://github.com/nano2dev/bluetti_mqtt.git"
 
 # Fix all bluetti entry point scripts (they all need different argument handling)
 RUN echo "Creating bluetti-mqtt script..." && \
@@ -62,7 +56,7 @@ RUN echo "Creating bluetti-mqtt script..." && \
     echo 'from bluetti_mqtt.server_cli import main' >> /usr/local/bin/bluetti-mqtt && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-mqtt && \
     echo '    sys.argv[0] = re.sub(r"(-script\.pyw|\.exe)?$", "", sys.argv[0])' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    sys.exit(main(sys.argv))' >> /usr/local/bin/bluetti-mqtt && \
+    echo '    sys.exit(main())' >> /usr/local/bin/bluetti-mqtt && \
     chmod +x /usr/local/bin/bluetti-mqtt && \
     echo "Creating bluetti-discovery script..." && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-discovery && \
