@@ -40,6 +40,16 @@ fi
 if [ $(bashio::config 'debug') == true ]; then
     export DEBUG=true
     bashio::log.info 'Debug mode is enabled.'
+    
+    # Debug bluetti_mqtt installation
+    bashio::log.info 'Checking bluetti_mqtt installation...'
+    python3 -c "import sys; print('Python version:', sys.version)" || bashio::log.error 'Failed to run Python'
+    python3 -c "import sys; print('Python path:', sys.path)" || bashio::log.error 'Failed to get Python path'
+    python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module found')" || bashio::log.error 'bluetti_mqtt module not found'
+    ls -la /usr/local/bin/bluetti-* || bashio::log.error 'bluetti entry points not found'
+    
+    # Test entry point directly
+    /usr/local/bin/bluetti-mqtt --help || bashio::log.error 'bluetti-mqtt entry point failed'
 fi
 
 args=()
