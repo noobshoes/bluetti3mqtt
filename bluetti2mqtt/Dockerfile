@@ -35,45 +35,10 @@ RUN pip install --no-cache-dir \
     crcmod==1.7 \
     asyncio-mqtt==0.12.1
 
-# Install bluetti_mqtt from nano2dev repository with safe verification
-RUN echo "Installing bluetti_mqtt..." && \
-    pip install --no-cache-dir "git+https://github.com/nano2dev/bluetti_mqtt.git" && \
-    echo "Verifying basic installation..." && \
-    python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module installed successfully')" && \
-    echo "Installation verification complete"
 
-# Create simple entry point scripts with correct shebang for Python environment
-RUN echo "Creating entry point scripts..." && \
-    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-mqtt && \
-    echo 'import sys' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'from bluetti_mqtt.server_cli import main' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    sys.exit(main())' >> /usr/local/bin/bluetti-mqtt && \
-    chmod +x /usr/local/bin/bluetti-mqtt && \
-    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-discovery && \
-    echo 'import sys' >> /usr/local/bin/bluetti-discovery && \
-    echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-discovery && \
-    echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-discovery && \
-    echo 'from bluetti_mqtt.discovery_cli import main' >> /usr/local/bin/bluetti-discovery && \
-    echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-discovery && \
-    echo '    sys.exit(main())' >> /usr/local/bin/bluetti-discovery && \
-    chmod +x /usr/local/bin/bluetti-discovery && \
-    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-logger && \
-    echo 'import sys' >> /usr/local/bin/bluetti-logger && \
-    echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-logger && \
-    echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-logger && \
-    echo 'from bluetti_mqtt.logger_cli import main' >> /usr/local/bin/bluetti-logger && \
-    echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-logger && \
-    echo '    sys.exit(main())' >> /usr/local/bin/bluetti-logger && \
-    chmod +x /usr/local/bin/bluetti-logger
-
-# Verify installation without triggering segfaults
-RUN python3 -c "import bluetti_mqtt; print('bluetti_mqtt imported successfully')" && \
-    which python3 && \
-    ls -la /usr/local/bin/bluetti-* && \
-    echo "Entry points verified"
+# Install bluetti_mqtt from PyPI (pinned version for stability)
+RUN pip install --no-cache-dir bluetti-mqtt==0.15.0 && \
+    python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module installed successfully')"
 
 # Set permissions
 RUN chmod a+x /run.sh
