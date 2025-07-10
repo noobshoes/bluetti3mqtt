@@ -9,11 +9,13 @@ RUN dos2unix /run.sh && chmod +x /run.sh && ls -l /run.sh && file /run.sh
 # Set working directory
 WORKDIR /
 
-# Install system dependencies
+
+# Install system dependencies (including dos2unix and file for line ending and diagnostics)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         bluez \
         dos2unix \
+        file \
         git \
     && rm -rf /var/lib/apt/lists/*
 
