@@ -14,8 +14,6 @@ RUN apk add --no-cache \
     nodejs \
     npm
 
-# Install bashio-cli for Home Assistant add-on compatibility
-RUN npm install -g bashio-cli
 
 # Fix line endings
 RUN dos2unix /run.sh
