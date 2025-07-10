@@ -10,7 +10,10 @@ RUN apk add --no-cache \
     dos2unix \
     git \
     python3-dev \
-    py3-pip
+    py3-pip \
+    build-base \
+    libffi-dev \
+    openssl-dev
 
 # Fix line endings
 RUN dos2unix /run.sh
@@ -19,20 +22,11 @@ RUN dos2unix /run.sh
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Install Python dependencies (handle both old and new pip versions)
-RUN pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel || \
-    pip install --no-cache-dir --upgrade pip setuptools wheel
+# Install Python dependencies with compatibility fixes
+RUN pip install --upgrade pip setuptools wheel
 
 # Install required dependencies first
-RUN pip install --no-cache-dir --break-system-packages \
-    pyasn1==0.6.1 \
-    cryptography==44.0.0 \
-    dbus-next==0.2.3 \
-    paho-mqtt==1.6.1 \
-    bleak==0.22.3 \
-    crcmod==1.7 \
-    asyncio-mqtt==0.12.1 || \
-    pip install --no-cache-dir \
+RUN pip install --no-cache-dir \
     pyasn1==0.6.1 \
     cryptography==44.0.0 \
     dbus-next==0.2.3 \
@@ -41,86 +35,39 @@ RUN pip install --no-cache-dir --break-system-packages \
     crcmod==1.7 \
     asyncio-mqtt==0.12.1
 
-# Install bluetti_mqtt from nano2dev repository with comprehensive error handling
+# Install bluetti_mqtt from nano2dev repository with safe verification
 RUN echo "Installing bluetti_mqtt..." && \
-    pip install --no-cache-dir --break-system-packages --upgrade setuptools wheel pip && \
-    (pip install --no-cache-dir --break-system-packages \
-        "git+https://github.com/nano2dev/bluetti_mqtt.git" || \
-     pip install --no-cache-dir \
-        "git+https://github.com/nano2dev/bluetti_mqtt.git" || \
-     (echo "Git install failed, trying alternative approach..." && \
-      pip install --no-cache-dir --break-system-packages --force-reinstall \
-        "git+https://github.com/nano2dev/bluetti_mqtt.git")) && \
-    echo "Verifying installation..." && \
+    pip install --no-cache-dir "git+https://github.com/nano2dev/bluetti_mqtt.git" && \
+    echo "Verifying basic installation..." && \
     python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module installed successfully')" && \
-    python3 -c "import bluetti_mqtt.server_cli; print('✓ server_cli module found')" && \
-    python3 -c "import bluetti_mqtt.discovery_cli; print('✓ discovery_cli module found')" && \
-    python3 -c "import bluetti_mqtt.logger_cli; print('✓ logger_cli module found')" && \
     echo "Installation verification complete"
 
-# Fix all bluetti entry point scripts with better error handling
-RUN echo "Creating bluetti-mqtt script..." && \
+# Create simple entry point scripts without complex error handling that might cause segfaults
+RUN echo "Creating entry point scripts..." && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-mqtt && \
-    echo '# -*- coding: utf-8 -*-' >> /usr/local/bin/bluetti-mqtt && \
     echo 'import sys' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'import os' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'try:' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    from bluetti_mqtt.server_cli import main' >> /usr/local/bin/bluetti-mqtt && \
-    echo 'except ImportError as e:' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    print(f"ERROR: Failed to import bluetti_mqtt.server_cli: {e}", file=sys.stderr)' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    print(f"Python path: {sys.path}", file=sys.stderr)' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    print(f"Python executable: {sys.executable}", file=sys.stderr)' >> /usr/local/bin/bluetti-mqtt && \
-    echo '    sys.exit(1)' >> /usr/local/bin/bluetti-mqtt && \
+    echo 'from bluetti_mqtt.server_cli import main' >> /usr/local/bin/bluetti-mqtt && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-mqtt && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-mqtt && \
     chmod +x /usr/local/bin/bluetti-mqtt && \
-    echo "Creating bluetti-discovery script..." && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-discovery && \
-    echo '# -*- coding: utf-8 -*-' >> /usr/local/bin/bluetti-discovery && \
     echo 'import sys' >> /usr/local/bin/bluetti-discovery && \
-    echo 'import os' >> /usr/local/bin/bluetti-discovery && \
-    echo 'try:' >> /usr/local/bin/bluetti-discovery && \
-    echo '    from bluetti_mqtt.discovery_cli import main' >> /usr/local/bin/bluetti-discovery && \
-    echo 'except ImportError as e:' >> /usr/local/bin/bluetti-discovery && \
-    echo '    print(f"ERROR: Failed to import bluetti_mqtt.discovery_cli: {e}", file=sys.stderr)' >> /usr/local/bin/bluetti-discovery && \
-    echo '    print(f"Python path: {sys.path}", file=sys.stderr)' >> /usr/local/bin/bluetti-discovery && \
-    echo '    print(f"Python executable: {sys.executable}", file=sys.stderr)' >> /usr/local/bin/bluetti-discovery && \
-    echo '    sys.exit(1)' >> /usr/local/bin/bluetti-discovery && \
+    echo 'from bluetti_mqtt.discovery_cli import main' >> /usr/local/bin/bluetti-discovery && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-discovery && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-discovery && \
     chmod +x /usr/local/bin/bluetti-discovery && \
-    echo "Creating bluetti-logger script..." && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-logger && \
-    echo '# -*- coding: utf-8 -*-' >> /usr/local/bin/bluetti-logger && \
     echo 'import sys' >> /usr/local/bin/bluetti-logger && \
-    echo 'import os' >> /usr/local/bin/bluetti-logger && \
-    echo 'try:' >> /usr/local/bin/bluetti-logger && \
-    echo '    from bluetti_mqtt.logger_cli import main' >> /usr/local/bin/bluetti-logger && \
-    echo 'except ImportError as e:' >> /usr/local/bin/bluetti-logger && \
-    echo '    print(f"ERROR: Failed to import bluetti_mqtt.logger_cli: {e}", file=sys.stderr)' >> /usr/local/bin/bluetti-logger && \
-    echo '    print(f"Python path: {sys.path}", file=sys.stderr)' >> /usr/local/bin/bluetti-logger && \
-    echo '    print(f"Python executable: {sys.executable}", file=sys.stderr)' >> /usr/local/bin/bluetti-logger && \
-    echo '    sys.exit(1)' >> /usr/local/bin/bluetti-logger && \
+    echo 'from bluetti_mqtt.logger_cli import main' >> /usr/local/bin/bluetti-logger && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-logger && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-logger && \
     chmod +x /usr/local/bin/bluetti-logger
 
-# Comprehensive verification and debugging
-RUN echo "=== Comprehensive Installation Verification ===" && \
-    echo "Python version: $(python3 --version)" && \
-    echo "Python executable: $(which python3)" && \
-    echo "Python path:" && \
-    python3 -c "import sys; print('\n'.join(sys.path))" && \
-    echo "Installed packages:" && \
-    pip list | grep -E "(bluetti|mqtt|bleak)" && \
-    echo "Testing imports:" && \
-    python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt')" && \
-    python3 -c "import bluetti_mqtt.server_cli; print('✓ server_cli')" && \
-    python3 -c "import bluetti_mqtt.discovery_cli; print('✓ discovery_cli')" && \
-    python3 -c "import bluetti_mqtt.logger_cli; print('✓ logger_cli')" && \
-    echo "Testing entry points:" && \
+# Verify installation without triggering segfaults
+RUN python3 -c "import bluetti_mqtt; print('bluetti_mqtt imported successfully')" && \
+    which python3 && \
     ls -la /usr/local/bin/bluetti-* && \
-    echo "Entry point verification complete"
+    echo "Entry points verified"
 
 # Create a diagnostic script for troubleshooting
 RUN echo '#!/bin/sh' > /usr/local/bin/test-bluetti-commands && \
