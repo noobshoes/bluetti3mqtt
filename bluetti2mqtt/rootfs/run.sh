@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bashio
+#!/bin/bash
 # ==============================================================================
 # Home Assistant Add-on: Bluetti3MQTT
 # MQTT bridge between Bluetti and Home Assistant
