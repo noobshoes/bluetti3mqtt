@@ -10,10 +10,7 @@ RUN apk add --no-cache \
     dos2unix \
     git \
     python3-dev \
-    py3-pip \
-    build-base \
-    libffi-dev \
-    openssl-dev
+    py3-pip
 
 # Fix line endings
 RUN dos2unix /run.sh
