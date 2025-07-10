@@ -43,18 +43,24 @@ RUN echo "Installing bluetti_mqtt..." && \
 RUN echo "Creating entry point scripts..." && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-mqtt && \
     echo 'import sys' >> /usr/local/bin/bluetti-mqtt && \
+    echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-mqtt && \
+    echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-mqtt && \
     echo 'from bluetti_mqtt.server_cli import main' >> /usr/local/bin/bluetti-mqtt && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-mqtt && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-mqtt && \
     chmod +x /usr/local/bin/bluetti-mqtt && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-discovery && \
     echo 'import sys' >> /usr/local/bin/bluetti-discovery && \
+    echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-discovery && \
+    echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-discovery && \
     echo 'from bluetti_mqtt.discovery_cli import main' >> /usr/local/bin/bluetti-discovery && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-discovery && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-discovery && \
     chmod +x /usr/local/bin/bluetti-discovery && \
     echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-logger && \
     echo 'import sys' >> /usr/local/bin/bluetti-logger && \
+    echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-logger && \
+    echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-logger && \
     echo 'from bluetti_mqtt.logger_cli import main' >> /usr/local/bin/bluetti-logger && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-logger && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-logger && \
