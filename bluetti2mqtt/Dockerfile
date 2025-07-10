@@ -2,9 +2,14 @@
 FROM python:3.10-slim
 
 
-# Copy root filesystem and fix line endings/permissions
+
+# Copy root filesystem, install dos2unix/file, and fix line endings/permissions in one step
 COPY rootfs /
-RUN dos2unix /run.sh && chmod +x /run.sh && ls -l /run.sh && file /run.sh
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends dos2unix file && \
+    dos2unix /run.sh && chmod +x /run.sh && ls -l /run.sh && file /run.sh && \
+    apt-get purge -y --auto-remove dos2unix file && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /
