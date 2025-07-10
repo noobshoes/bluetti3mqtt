@@ -1,28 +1,16 @@
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
+FROM $BUILD_FROM
 
-FROM python:3.10-slim
-
-
-
-# Copy root filesystem, install dos2unix/file, and fix line endings/permissions in one step
+# Copy root filesystem
 COPY rootfs /
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends dos2unix file && \
-    dos2unix /run.sh && chmod +x /run.sh && ls -l /run.sh && file /run.sh && \
-    apt-get purge -y --auto-remove dos2unix file && \
-    rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /
-
-
-# Install system dependencies (including dos2unix and file for line ending and diagnostics)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        bluez \
-        dos2unix \
-        file \
-        git \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apk add --no-cache \
+    bluez \
+    dos2unix \
+    git \
+    python3-dev \
+    py3-pip
 
 # Fix line endings
 RUN dos2unix /run.sh
@@ -53,7 +41,7 @@ RUN echo "Installing bluetti_mqtt..." && \
 
 # Create simple entry point scripts without complex error handling that might cause segfaults
 RUN echo "Creating entry point scripts..." && \
-    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-mqtt && \
+    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-mqtt && \
     echo 'import sys' >> /usr/local/bin/bluetti-mqtt && \
     echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-mqtt && \
     echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-mqtt && \
@@ -61,7 +49,7 @@ RUN echo "Creating entry point scripts..." && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-mqtt && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-mqtt && \
     chmod +x /usr/local/bin/bluetti-mqtt && \
-    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-discovery && \
+    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-discovery && \
     echo 'import sys' >> /usr/local/bin/bluetti-discovery && \
     echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-discovery && \
     echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-discovery && \
@@ -69,7 +57,7 @@ RUN echo "Creating entry point scripts..." && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-discovery && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-discovery && \
     chmod +x /usr/local/bin/bluetti-discovery && \
-    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-logger && \
+    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-logger && \
     echo 'import sys' >> /usr/local/bin/bluetti-logger && \
     echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-logger && \
     echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-logger && \
@@ -83,23 +71,6 @@ RUN python3 -c "import bluetti_mqtt; print('bluetti_mqtt imported successfully')
     which python3 && \
     ls -la /usr/local/bin/bluetti-* && \
     echo "Entry points verified"
-
-# Create a diagnostic script for troubleshooting
-RUN echo '#!/bin/sh' > /usr/local/bin/test-bluetti-commands && \
-    echo 'echo "=== Bluetti CLI Tools Diagnostic ==="' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'echo "Python version: $(python3 --version)"' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'echo "Available commands:"' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'ls -la /usr/local/bin/bluetti-*' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'echo ""' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'echo "Testing import:"' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'python3 -c "import bluetti_mqtt; print(\"✓ bluetti_mqtt module loads successfully\")" || echo "✗ Failed to import bluetti_mqtt"' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'echo ""' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'echo "Testing entry points:"' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'for cmd in bluetti-mqtt bluetti-discovery bluetti-logger; do' >> /usr/local/bin/test-bluetti-commands && \
-    echo '    echo "Testing $cmd --help..."' >> /usr/local/bin/test-bluetti-commands && \
-    echo '    timeout 5s $cmd --help > /dev/null 2>&1 && echo "✓ $cmd works" || echo "✗ $cmd failed"' >> /usr/local/bin/test-bluetti-commands && \
-    echo 'done' >> /usr/local/bin/test-bluetti-commands && \
-    chmod +x /usr/local/bin/test-bluetti-commands
 
 # Set permissions
 RUN chmod a+x /run.sh
