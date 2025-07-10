@@ -42,9 +42,9 @@ RUN echo "Installing bluetti_mqtt..." && \
     python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module installed successfully')" && \
     echo "Installation verification complete"
 
-# Create simple entry point scripts without complex error handling that might cause segfaults
+# Create simple entry point scripts with correct shebang for Python environment
 RUN echo "Creating entry point scripts..." && \
-    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-mqtt && \
+    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-mqtt && \
     echo 'import sys' >> /usr/local/bin/bluetti-mqtt && \
     echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-mqtt && \
     echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-mqtt && \
@@ -52,7 +52,7 @@ RUN echo "Creating entry point scripts..." && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-mqtt && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-mqtt && \
     chmod +x /usr/local/bin/bluetti-mqtt && \
-    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-discovery && \
+    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-discovery && \
     echo 'import sys' >> /usr/local/bin/bluetti-discovery && \
     echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-discovery && \
     echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-discovery && \
@@ -60,7 +60,7 @@ RUN echo "Creating entry point scripts..." && \
     echo 'if __name__ == "__main__":' >> /usr/local/bin/bluetti-discovery && \
     echo '    sys.exit(main())' >> /usr/local/bin/bluetti-discovery && \
     chmod +x /usr/local/bin/bluetti-discovery && \
-    echo '#!/usr/bin/python3' > /usr/local/bin/bluetti-logger && \
+    echo '#!/usr/local/bin/python3' > /usr/local/bin/bluetti-logger && \
     echo 'import sys' >> /usr/local/bin/bluetti-logger && \
     echo 'print("[DEBUG] sys.executable:", sys.executable)' >> /usr/local/bin/bluetti-logger && \
     echo 'print("[DEBUG] sys.path:", sys.path)' >> /usr/local/bin/bluetti-logger && \
