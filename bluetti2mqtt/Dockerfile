@@ -1,16 +1,16 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
-FROM $BUILD_FROM
+
+FROM python:3.10-slim
 
 # Copy root filesystem
 COPY rootfs /
 
-# Install build dependencies and runtime requirements for better compatibility
-RUN apk add --no-cache \
-    bluez \
-    dos2unix \
-    git \
-    python3-dev \
-    py3-pip
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        bluez \
+        dos2unix \
+        git \
+    && rm -rf /var/lib/apt/lists/*
 
 # Fix line endings
 RUN dos2unix /run.sh
