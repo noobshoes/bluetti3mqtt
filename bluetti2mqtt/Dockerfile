@@ -1,8 +1,13 @@
 
 FROM python:3.10-slim
 
-# Copy root filesystem
+
+# Copy root filesystem and fix line endings/permissions
 COPY rootfs /
+RUN dos2unix /run.sh && chmod +x /run.sh && ls -l /run.sh && file /run.sh
+
+# Set working directory
+WORKDIR /
 
 # Install system dependencies
 RUN apt-get update && \
