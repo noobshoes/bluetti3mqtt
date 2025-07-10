@@ -36,9 +36,10 @@ RUN pip install --no-cache-dir \
     asyncio-mqtt==0.12.1
 
 
-# Install bluetti_mqtt from PyPI (pinned version for stability)
-RUN pip install --no-cache-dir bluetti-mqtt==0.15.0 && \
-    python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module installed successfully')"
+
+# Install bluetti_mqtt from nano2dev GitHub (AC180 support)
+RUN pip install --no-cache-dir git+https://github.com/nano2dev/bluetti_mqtt.git && \
+    python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt (nano2dev) module installed successfully')"
 
 # Set permissions
 RUN chmod a+x /run.sh
