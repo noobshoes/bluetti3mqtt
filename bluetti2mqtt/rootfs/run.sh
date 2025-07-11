@@ -1,5 +1,13 @@
 #!/usr/bin/with-contenv bashio
 # ==============================================================================
+# Ensure venv exists at runtime
+if [ ! -x /venv/bin/python3 ]; then
+    echo "[WARN] /venv/bin/python3 not found, creating venv and installing dependencies..."
+    python3 -m venv /venv
+    /venv/bin/pip install --upgrade pip
+    /venv/bin/pip install --no-cache-dir -r /config/bluetti2mqtt/requirements.txt
+    /venv/bin/pip install --no-cache-dir /config/bluetti2mqtt/bluetti_mqtt
+fi
 # Home Assistant Add-on: Bluetti3MQTT
 # MQTT bridge between Bluetti and Home Assistant
 # ==============================================================================
