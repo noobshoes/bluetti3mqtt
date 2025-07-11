@@ -6,7 +6,11 @@ if [ ! -x /venv/bin/python3 ]; then
     echo "[WARN] /venv/bin/python3 not found, creating venv and installing dependencies..."
     python3 -m venv /venv
     /venv/bin/pip install --upgrade pip
-    /venv/bin/pip install --no-cache-dir -r /bluetti2mqtt/requirements.txt
+    if [ -f /bluetti2mqtt/requirements.txt ]; then
+        /venv/bin/pip install --no-cache-dir -r /bluetti2mqtt/requirements.txt
+    else
+        echo "[INFO] requirements.txt not found, skipping requirements install."
+    fi
     /venv/bin/pip install --no-cache-dir /bluetti2mqtt/bluetti_mqtt
 fi
 # Home Assistant Add-on: Bluetti3MQTT
