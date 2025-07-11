@@ -14,6 +14,8 @@ if [ $(bashio::config 'debug') == true ]; then
     bashio::log.info 'Debug mode is enabled.'
     # Debug bluetti_mqtt installation
     bashio::log.info 'Checking bluetti_mqtt installation...'
+    [ -n "$DEBUG" ] && bashio::log.info "Listing /venv/bin contents for debug:"
+    ls -l /venv/bin || bashio::log.warning "/venv/bin does not exist at runtime!"
     /venv/bin/python3 -c "import sys; print('Python version:', sys.version)" || bashio::log.error 'Failed to run Python'
     /venv/bin/python3 -c "import sys; print('Python path:', sys.path)" || bashio::log.error 'Failed to get Python path'
     /venv/bin/python3 -c "import bluetti_mqtt; print('✓ bluetti_mqtt module found')" || bashio::log.error 'bluetti_mqtt module not found'

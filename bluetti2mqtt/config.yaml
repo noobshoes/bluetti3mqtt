@@ -1,7 +1,7 @@
 ---
 name: Bluetti to MQTT
 
-version: 1.6.27
+version: 1.6.28
 slug: "bluetti2mqtt"
 description: "MQTT bridge between Bluetti and Home Assistant with updated nano2dev support"
 url: "https://github.com/noobshoes/bluetti3mqtt"
