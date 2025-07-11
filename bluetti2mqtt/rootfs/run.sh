@@ -11,6 +11,10 @@ if [ ! -x /venv/bin/python3 ]; then
     else
         echo "[INFO] requirements.txt not found, skipping requirements install."
     fi
+    if [ -f /bluetti2mqtt/setup.py ]; then
+        echo "[INFO] Installing local bluetti_mqtt package in editable mode..."
+        /venv/bin/pip install --no-cache-dir -e /bluetti2mqtt
+    fi
 fi
 # Home Assistant Add-on: Bluetti3MQTT
 # MQTT bridge between Bluetti and Home Assistant
