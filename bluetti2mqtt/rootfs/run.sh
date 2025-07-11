@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bashio
 # ==============================================================================
-# Ensure venv exists at runtime
+export PYTHONPATH=/bluetti2mqtt:$PYTHONPATH
 # Ensure venv exists at runtime
 if [ ! -x /venv/bin/python3 ]; then
     echo "[WARN] /venv/bin/python3 not found, creating venv and installing dependencies..."
