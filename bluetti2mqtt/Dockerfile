@@ -27,14 +27,20 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Copy local project files to /bluetti2mqtt (matching script expectations)
-COPY requirements.txt /bluetti2mqtt/
-COPY setup.py /bluetti2mqtt/
-COPY bluetti_mqtt/ /bluetti2mqtt/bluetti_mqtt/
+# Copy all files first, then organize them
+COPY . /tmp/build/
+
+# Move the required files to the correct locations
+RUN mkdir -p /bluetti2mqtt && \
+    cp /tmp/build/requirements.txt /bluetti2mqtt/ 2>/dev/null || echo "requirements.txt not found in /tmp/build/" && \
+    cp /tmp/build/setup.py /bluetti2mqtt/ 2>/dev/null || echo "setup.py not found in /tmp/build/" && \
+    cp -r /tmp/build/bluetti_mqtt /bluetti2mqtt/ 2>/dev/null || echo "bluetti_mqtt/ not found in /tmp/build/" && \
+    ls -la /tmp/build/ && \
+    echo "Contents copied to /bluetti2mqtt:" && \
+    ls -la /bluetti2mqtt/
 
 # Test that files are in the right place
-RUN ls -la /bluetti2mqtt/ && \
-    [ -f /bluetti2mqtt/requirements.txt ] && echo "✓ requirements.txt found" || echo "✗ requirements.txt missing" && \
+RUN [ -f /bluetti2mqtt/requirements.txt ] && echo "✓ requirements.txt found" || echo "✗ requirements.txt missing" && \
     [ -f /bluetti2mqtt/setup.py ] && echo "✓ setup.py found" || echo "✗ setup.py missing" && \
     [ -d /bluetti2mqtt/bluetti_mqtt ] && echo "✓ bluetti_mqtt/ directory found" || echo "✗ bluetti_mqtt/ directory missing"
 
