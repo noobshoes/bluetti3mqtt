@@ -14,8 +14,6 @@ RUN apk add --no-cache \
         bluez \
         dbus \
         git \
-        libffi-dev \
-        openssl-dev \
     && mkdir -p /var/run/dbus \
     && dbus-uuidgen > /var/lib/dbus/machine-id
 
