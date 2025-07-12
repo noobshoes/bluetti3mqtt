@@ -1,5 +1,5 @@
 asyncio-mqtt==0.12.1
-bleak==0.21.1
+bleak==0.20.2
 crcmod==1.7
 cryptography==44.0.0
 dbus-next==0.2.3

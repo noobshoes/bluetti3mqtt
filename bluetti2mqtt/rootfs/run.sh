@@ -290,12 +290,45 @@ execute_mqtt_mode() {
     local bluetti_cmd="${VENV_PATH}/bin/bluetti-mqtt"
     log_debug "Executing: ${bluetti_cmd} ${args[*]}"
     
-    # Set environment variables to help with potential segfault issues
+    # Set comprehensive environment variables to help with potential segfault issues
     export PYTHONMALLOC=malloc
     export MALLOC_CHECK_=0
     export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/dbus/system_bus_socket"
+    export DBUS_SYSTEM_BUS_ADDRESS="unix:path=/run/dbus/system_bus_socket"
+    export BLEAK_DEBUG=1
+    export PYTHONFAULTHANDLER=1
+    export PYTHONUNBUFFERED=1
     
-    exec "${bluetti_cmd}" "${args[@]}"
+    # Try to start D-Bus if not running
+    if ! pgrep -x "dbus-daemon" > /dev/null; then
+        log_info "Starting D-Bus daemon..."
+        dbus-daemon --system --fork --nopidfile 2>/dev/null || log_warn "Could not start D-Bus daemon"
+    fi
+    
+    # Try running with timeout and better error handling
+    log_info "Attempting to start Bluetti MQTT bridge with timeout protection..."
+    timeout 10 "${bluetti_cmd}" "${args[@]}" || {
+        local exit_code=$?
+        if [[ $exit_code -eq 124 ]]; then
+            log_error "Command timed out after 10 seconds - possible segfault avoided"
+        else
+            log_error "Command failed with exit code: $exit_code"
+        fi
+        
+        # Try fallback approach with Python module execution
+        log_info "Attempting fallback execution method..."
+        export PYTHONPATH="/venv/lib/python3.10/site-packages:${PYTHONPATH}"
+        exec "${PYTHON_EXE}" -c "
+import sys
+sys.path.insert(0, '/venv/lib/python3.10/site-packages')
+try:
+    from bluetti_mqtt.server_cli import main
+    main()
+except Exception as e:
+    print(f'Fallback execution failed: {e}')
+    sys.exit(1)
+"
+    }
 }
 
 # Execute discovery mode

@@ -12,7 +12,10 @@ COPY requirements.txt /bluetti2mqtt/requirements.txt
 # Install system dependencies (Alpine Linux) - minimal for Bluetooth support
 RUN apk add --no-cache \
         bluez \
-        git
+        dbus \
+        git \
+    && mkdir -p /var/run/dbus \
+    && dbus-uuidgen > /var/lib/dbus/machine-id
 
 # Set environment variables for better compatibility
 ENV PYTHONUNBUFFERED=1
