@@ -1,11 +1,13 @@
 
-# Use Debian-based Home Assistant base image for compatibility
-ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-debian:latest
+# Use Alpine-based Home Assistant base image for compatibility
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
 FROM $BUILD_FROM
 
 # Copy root filesystem
 COPY rootfs /
 
+# Copy requirements.txt to the app directory
+COPY requirements.txt /bluetti2mqtt/requirements.txt
 
 # Install system dependencies (Alpine Linux)
 RUN apk add --no-cache \

@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Rebuild Bluetti2MQTT Add-on (Debian base)",
+			"command": "docker build -t bluetti2mqtt:dev bluetti2mqtt",
+			"group": "build",
+			"isBackground": false
+		}
+	]
+}

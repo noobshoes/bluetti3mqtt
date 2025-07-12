@@ -87,7 +87,7 @@ install_dependencies() {
     log_debug "Contents of ${APP_PATH}:"
     ls -la "${APP_PATH}/" || log_error "Failed to list ${APP_PATH}"
 
-    # Install requirements.txt if it exists
+    # Always install requirements.txt first if it exists
     if [[ -f "${requirements_file}" ]]; then
         log_info "Installing dependencies from requirements.txt..."
         if ! "${PYTHON_EXE}" -m pip install --no-cache-dir -r "${requirements_file}"; then
