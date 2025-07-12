@@ -80,6 +80,13 @@ install_dependencies() {
     local requirements_file="${APP_PATH}/requirements.txt"
     local setup_file="${APP_PATH}/setup.py"
 
+    log_debug "Looking for requirements.txt at: ${requirements_file}"
+    log_debug "Looking for setup.py at: ${setup_file}"
+    
+    # List what's actually in the APP_PATH
+    log_debug "Contents of ${APP_PATH}:"
+    ls -la "${APP_PATH}/" || log_error "Failed to list ${APP_PATH}"
+
     # Install requirements.txt if it exists
     if [[ -f "${requirements_file}" ]]; then
         log_info "Installing dependencies from requirements.txt..."
@@ -114,6 +121,14 @@ run_diagnostics() {
     fi
 
     log_info "Running environment diagnostics..."
+
+    # Check what files are actually in the APP_PATH
+    log_debug "Checking contents of ${APP_PATH}..."
+    if [[ -d "${APP_PATH}" ]]; then
+        ls -la "${APP_PATH}/" | head -20
+    else
+        log_error "${APP_PATH} directory not found!"
+    fi
 
     # Check virtual environment
     log_debug "Checking virtual environment structure..."
