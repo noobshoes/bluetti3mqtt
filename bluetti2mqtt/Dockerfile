@@ -7,46 +7,23 @@ FROM $BUILD_FROM
 COPY rootfs /
 
 
-# Install system dependencies (Debian/Ubuntu)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Install system dependencies (Alpine Linux)
+RUN apk add --no-cache \
         bluez \
         dos2unix \
         git \
         python3-dev \
-        python3-pip \
-        python3-venv \
         nodejs \
-        npm && \
-    rm -rf /var/lib/apt/lists/*
+        npm
 
 
 
 # Fix line endings
 RUN dos2unix /run.sh
 
+# Set environment variables for better compatibility
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-
-
-# Create and activate Python virtual environment
-RUN python3 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
-
-# Upgrade pip and setuptools in venv
-RUN /venv/bin/pip install --upgrade pip setuptools wheel
-
-# Install required dependencies in venv
-RUN /venv/bin/pip install --no-cache-dir \
-    pyasn1==0.6.1 \
-    cryptography==44.0.0 \
-    dbus-next==0.2.3 \
-    paho-mqtt==1.6.1 \
-    bleak==0.22.3 \
-    crcmod==1.7 \
-    asyncio-mqtt==0.12.1
-
-# Set environment variables for better compatibility
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
