@@ -1,3 +1,9 @@
+## [1.8.5] - 2025-01-30
+
+- Removed explicit cryptography dependency to avoid compilation issues in Alpine
+- Fixed package installation by relying on nano2dev/bluetti_mqtt's included dependencies
+- Streamlined requirements.txt to eliminate build failures
+
 ## [1.4.1] - 2023-05-13
 
 - Bump bluetti_mqtt to version 0.15.0.
