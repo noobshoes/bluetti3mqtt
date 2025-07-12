@@ -1,3 +1,9 @@
+## [1.8.7] - 2025-01-30
+
+- Fixed entry point execution error: main() missing required positional argument 'argv'
+- Added fallback to Python module execution when entry point fails
+- Improved error handling and timeout protection for application startup
+
 ## [1.8.6] - 2025-01-30
 
 - Re-added cryptography dependency with --only-binary flag to use pre-compiled wheels

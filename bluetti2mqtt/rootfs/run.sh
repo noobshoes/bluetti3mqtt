@@ -307,28 +307,24 @@ execute_mqtt_mode() {
     
     # Try running with timeout and better error handling
     log_info "Attempting to start Bluetti MQTT bridge with timeout protection..."
-    timeout 10 "${bluetti_cmd}" "${args[@]}" || {
+    
+    # First try the entry point script
+    if timeout 10 "${bluetti_cmd}" "${args[@]}" 2>/dev/null; then
+        # Success - continue running
+        exec "${bluetti_cmd}" "${args[@]}"
+    else
         local exit_code=$?
         if [[ $exit_code -eq 124 ]]; then
             log_error "Command timed out after 10 seconds - possible segfault avoided"
         else
-            log_error "Command failed with exit code: $exit_code"
+            log_error "Entry point failed with exit code: $exit_code"
         fi
         
         # Try fallback approach with Python module execution
         log_info "Attempting fallback execution method..."
         export PYTHONPATH="/venv/lib/python3.10/site-packages:${PYTHONPATH}"
-        exec "${PYTHON_EXE}" -c "
-import sys
-sys.path.insert(0, '/venv/lib/python3.10/site-packages')
-try:
-    from bluetti_mqtt.server_cli import main
-    main()
-except Exception as e:
-    print(f'Fallback execution failed: {e}')
-    sys.exit(1)
-"
-    }
+        exec "${PYTHON_EXE}" -m bluetti_mqtt.server_cli "${args[@]}"
+    fi
 }
 
 # Execute discovery mode
