@@ -27,22 +27,19 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Copy all files first, then organize them
-COPY . /tmp/build/
+# Create directory structure and install bluetti_mqtt from GitHub
+RUN mkdir -p /bluetti2mqtt
 
-# Move the required files to the correct locations
-RUN mkdir -p /bluetti2mqtt && \
-    cp /tmp/build/requirements.txt /bluetti2mqtt/ 2>/dev/null || echo "requirements.txt not found in /tmp/build/" && \
-    cp /tmp/build/setup.py /bluetti2mqtt/ 2>/dev/null || echo "setup.py not found in /tmp/build/" && \
-    cp -r /tmp/build/bluetti_mqtt /bluetti2mqtt/ 2>/dev/null || echo "bluetti_mqtt/ not found in /tmp/build/" && \
-    ls -la /tmp/build/ && \
-    echo "Contents copied to /bluetti2mqtt:" && \
-    ls -la /bluetti2mqtt/
-
-# Test that files are in the right place
-RUN [ -f /bluetti2mqtt/requirements.txt ] && echo "✓ requirements.txt found" || echo "✗ requirements.txt missing" && \
-    [ -f /bluetti2mqtt/setup.py ] && echo "✓ setup.py found" || echo "✗ setup.py missing" && \
-    [ -d /bluetti2mqtt/bluetti_mqtt ] && echo "✓ bluetti_mqtt/ directory found" || echo "✗ bluetti_mqtt/ directory missing"
+# Install bluetti_mqtt from nano2dev GitHub repository directly into venv at runtime
+# This ensures we have the module available regardless of local file issues
+RUN echo '#!/bin/bash' > /install_bluetti.sh && \
+    echo 'if [ ! -f /venv/lib/python3.10/site-packages/bluetti_mqtt/__init__.py ]; then' >> /install_bluetti.sh && \
+    echo '  echo "Installing bluetti_mqtt from GitHub..."' >> /install_bluetti.sh && \
+    echo '  /venv/bin/pip install --no-cache-dir git+https://github.com/nano2dev/bluetti_mqtt.git' >> /install_bluetti.sh && \
+    echo 'else' >> /install_bluetti.sh && \
+    echo '  echo "bluetti_mqtt already installed"' >> /install_bluetti.sh && \
+    echo 'fi' >> /install_bluetti.sh && \
+    chmod +x /install_bluetti.sh
 
 # Set permissions
 RUN chmod a+x /run.sh

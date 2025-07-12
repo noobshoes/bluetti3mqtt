@@ -108,7 +108,18 @@ install_dependencies() {
         fi
         log_info "Local package installed successfully"
     else
-        log_info "No setup.py found, skipping local package installation"
+        log_info "No setup.py found, installing bluetti_mqtt from GitHub..."
+        # Run the installation script created in Dockerfile
+        if [[ -f "/install_bluetti.sh" ]]; then
+            if ! /install_bluetti.sh; then
+                log_error "Failed to install bluetti_mqtt from GitHub"
+                return 1
+            fi
+            log_info "bluetti_mqtt installed from GitHub successfully"
+        else
+            log_error "No installation method available for bluetti_mqtt"
+            return 1
+        fi
     fi
 
     return 0
