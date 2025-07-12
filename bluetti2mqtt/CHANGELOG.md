@@ -1,3 +1,9 @@
+## [1.8.6] - 2025-01-30
+
+- Re-added cryptography dependency with --only-binary flag to use pre-compiled wheels
+- Fixed ModuleNotFoundError for cryptography module required by bluetti_mqtt
+- Avoided source compilation by forcing binary wheel installation
+
 ## [1.8.5] - 2025-01-30
 
 - Removed explicit cryptography dependency to avoid compilation issues in Alpine

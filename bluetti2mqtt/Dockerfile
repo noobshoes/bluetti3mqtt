@@ -21,7 +21,7 @@ RUN apk add --no-cache \
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Create directory structure and install bluetti_mqtt from GitHub
+# Create directory structure
 RUN mkdir -p /bluetti2mqtt
 
 # Install bluetti_mqtt from nano2dev GitHub repository directly into venv at runtime

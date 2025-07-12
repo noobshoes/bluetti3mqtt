@@ -90,7 +90,7 @@ install_dependencies() {
     # Always install requirements.txt first if it exists
     if [[ -f "${requirements_file}" ]]; then
         log_info "Installing dependencies from requirements.txt..."
-        if ! "${PYTHON_EXE}" -m pip install --no-cache-dir -r "${requirements_file}"; then
+        if ! "${PYTHON_EXE}" -m pip install --no-cache-dir --only-binary=cryptography -r "${requirements_file}"; then
             log_error "Failed to install requirements from ${requirements_file}"
             return 1
         fi
