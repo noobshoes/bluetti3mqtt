@@ -12,11 +12,17 @@ COPY requirements.txt /bluetti2mqtt/requirements.txt
 # Install system dependencies (Alpine Linux)
 RUN apk add --no-cache \
         bluez \
+        bluez-dev \
+        dbus \
+        dbus-dev \
         dos2unix \
         git \
         python3-dev \
         nodejs \
-        npm
+        npm \
+        gcc \
+        musl-dev \
+        linux-headers
 
 
 
