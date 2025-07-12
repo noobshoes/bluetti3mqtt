@@ -170,10 +170,11 @@ run_diagnostics() {
 
     # Test module execution
     log_debug "Testing bluetti_mqtt module execution..."
-    if "${PYTHON_EXE}" -m bluetti_mqtt --help >/dev/null 2>&1; then
-        log_info "bluetti_mqtt module can be executed"
+    local bluetti_cmd="${VENV_PATH}/bin/bluetti-mqtt"
+    if [[ -x "${bluetti_cmd}" ]] && "${bluetti_cmd}" --help >/dev/null 2>&1; then
+        log_info "bluetti_mqtt entry point can be executed"
     else
-        log_error "bluetti_mqtt module execution failed"
+        log_error "bluetti_mqtt entry point execution failed"
     fi
 
     # Check for legacy entry points (should not be used)
@@ -283,8 +284,10 @@ execute_mqtt_mode() {
     
     args+=(--interval "${POLL_SEC}" --ha-config "${HA_CONFIG}" "${BT_MAC}")
     
-    log_debug "Executing: ${PYTHON_EXE} -m bluetti_mqtt ${args[*]}"
-    exec "${PYTHON_EXE}" -m bluetti_mqtt "${args[@]}"
+    # Use entry point script instead of -m module
+    local bluetti_cmd="${VENV_PATH}/bin/bluetti-mqtt"
+    log_debug "Executing: ${bluetti_cmd} ${args[*]}"
+    exec "${bluetti_cmd}" "${args[@]}"
 }
 
 # Execute discovery mode
@@ -302,8 +305,10 @@ execute_discovery_mode() {
     local timestamp=$(date "+%m%d%y%H%M%S")
     args+=(--log "${SHARE_PATH}/discovery_${timestamp}.log" "${BT_MAC}")
     
-    log_debug "Executing: ${PYTHON_EXE} -m bluetti_mqtt.discovery ${args[*]}"
-    exec "${PYTHON_EXE}" -m bluetti_mqtt.discovery "${args[@]}"
+    # Use entry point script instead of -m module
+    local bluetti_cmd="${VENV_PATH}/bin/bluetti-discovery"
+    log_debug "Executing: ${bluetti_cmd} ${args[*]}"
+    exec "${bluetti_cmd}" "${args[@]}"
 }
 
 # Execute logger mode
@@ -321,8 +326,10 @@ execute_logger_mode() {
     local timestamp=$(date "+%m%d%y%H%M%S")
     args+=(--log "${SHARE_PATH}/logger_${timestamp}.log" "${BT_MAC}")
     
-    log_debug "Executing: ${PYTHON_EXE} -m bluetti_mqtt.logger ${args[*]}"
-    exec "${PYTHON_EXE}" -m bluetti_mqtt.logger "${args[@]}"
+    # Use entry point script instead of -m module
+    local bluetti_cmd="${VENV_PATH}/bin/bluetti-logger"
+    log_debug "Executing: ${bluetti_cmd} ${args[*]}"
+    exec "${bluetti_cmd}" "${args[@]}"
 }
 
 # Execute the selected mode
