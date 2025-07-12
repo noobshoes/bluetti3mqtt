@@ -9,29 +9,12 @@ COPY rootfs /
 # Copy requirements.txt to the app directory
 COPY requirements.txt /bluetti2mqtt/requirements.txt
 
-# Install system dependencies (Alpine Linux)
+# Install system dependencies (Alpine Linux) - minimal for Bluetooth support
 RUN apk add --no-cache \
         bluez \
-        bluez-dev \
-        dbus \
-        dbus-dev \
-        dos2unix \
-        git \
-        python3-dev \
-        nodejs \
-        npm \
-        gcc \
-        musl-dev \
-        linux-headers
-
-
-
-# Fix line endings
-RUN dos2unix /run.sh
+        git
 
 # Set environment variables for better compatibility
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
